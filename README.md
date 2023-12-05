@@ -81,6 +81,5 @@ cd AirBnB-Clone
 Copy code
 ./console.py
 ```
-
 3. Explore the documented commands and start managing your AirBnB objects!
 
