@@ -2,14 +2,24 @@ import uuid
 from datetime import datetime
 
 class BaseModel:
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         The following module initializes a new instance of BaseModel with
         a unique ID, creation timestamp, and the last update timestamp.
+        If kwargs is not empty, updates attributes based on kwargs.
         """
-        self.id = str(uuid.uuid4())  # Generate a unique ID using uuid4
-        self.created_at = datetime.now()  # Creation timestamp to current datetime
-        self.updated_at = datetime.now()  # Update timestamp to currentdatetime
+
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key in ['created_at', 'updated_at']:
+                        setattr(self, key, datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f'))
+                    else:
+                        setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())  # Generate a unique ID using uuid4
+            self.created_at = datetime.now()  # Creation timestamp to current datetime
+            self.updated_at = datetime.now()  # Update timestamp to currentdatetime
 
     def __str__(self):
         """
