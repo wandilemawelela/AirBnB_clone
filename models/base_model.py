@@ -7,9 +7,9 @@ class BaseModel:
         The following module initializes a new instance of BaseModel with
         a unique ID, creation timestamp, and the last update timestamp.
         """
-        self.id = str(uuid.uuid4())  # Generate a unique ID using uuid4 and convert to string
-        self.created_at = datetime.now()  # Set creation timestamp to current datetime
-        self.updated_at = datetime.now()  # Set update timestamp to current datetime
+        self.id = str(uuid.uuid4())  # Generate a unique ID using uuid4
+        self.created_at = datetime.now()  # Creation timestamp to current datetime
+        self.updated_at = datetime.now()  # Update timestamp to currentdatetime
 
     def __str__(self):
         """
