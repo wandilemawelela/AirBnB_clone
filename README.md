@@ -39,8 +39,10 @@ EOF  help  quit
 (hbnb) 
 (hbnb) quit
 $
+```
 
 #### Non-Interactive Mode
+```
 $ echo "help" | ./console.py
 (hbnb)
 
@@ -62,21 +64,23 @@ Documented commands (type help <topic>):
 EOF  help  quit
 (hbnb) 
 $
+```
 
 ## Getting Started
 1. Clone the repository.
 
-bash
+```bash
 Copy code
 git clone https://github.com/your-username/AirBnB-Clone.git
 cd AirBnB-Clone
-
+```
 
 2. Run the command interpreter in interactive mode.
 
-bash
+```bash
 Copy code
 ./console.py
+```
 
 3. Explore the documented commands and start managing your AirBnB objects!
 
