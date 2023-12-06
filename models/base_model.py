@@ -1,14 +1,20 @@
 import uuid
 from datetime import datetime
 
+try:
+    from models.engine.file_storage import storage  # Try to import storage
+except ImportError:
+    storage = None  # Handle ImportError gracefully
+
 class BaseModel:
     def __init__(self, *args, **kwargs):
         """
-        The following module initializes a new instance of BaseModel with
-        a unique ID, creation timestamp, and the last update timestamp.
-        If kwargs is not empty, updates attributes based on kwargs.
-        """
+        Initializes a new instance of BaseModel.
 
+        Args:
+            *args: Additional arguments.
+            **kwargs: Additional keyword arguments. If provided, updates attributes based on kwargs.
+        """
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -18,20 +24,31 @@ class BaseModel:
                         setattr(self, key, value)
         else:
             self.id = str(uuid.uuid4())  # Generate a unique ID using uuid4
-            self.created_at = datetime.now()  # Creation timestamp to current datetime
-            self.updated_at = datetime.now()  # Update timestamp to currentdatetime
+            self.created_at = datetime.now()  # Creation timestamp to the current datetime
+            self.updated_at = datetime.now()  # Update timestamp to the current datetime
+
+            # If it’s a new instance (not from a dictionary representation),
+            # add a call to the method new(self) on storage
+            if storage:
+                storage.new(self)
 
     def __str__(self):
         """
         Returns a string representation of the BaseModel instance.
+
+        Returns:
+            str: A string representation of the BaseModel instance.
         """
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
         """
         Updates the last update timestamp to the current datetime.
+        Calls the save method of storage.
         """
-        self.updated_at = datetime.now()
+        if storage:
+            self.updated_at = datetime.now()
+            storage.save()
 
     def to_dict(self):
         """
@@ -45,3 +62,4 @@ class BaseModel:
         obj_dict['created_at'] = self.created_at.isoformat()  # Convert created_at to ISO format
         obj_dict['updated_at'] = self.updated_at.isoformat()  # Convert updated_at to ISO format
         return obj_dict
+
