@@ -2,6 +2,9 @@
 """This module implements the HBnB console."""
 
 import cmd
+import uuid
+from models import storage
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
@@ -34,6 +37,26 @@ class HBNBCommand(cmd.Cmd):
     def help_EOF(self):
         """Display help message for the EOF command."""
         print("Exit the program when EOF is received")
+
+    def do_create(self, arg):
+        """Usage: create <class>
+        Create a new class instance and print its id.
+        """
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        else:
+            class_name = args[0]
+            global_namespace = globals()
+
+        if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+            print("** class doesn't exist **")
+        else:
+            new_instance = global_namespace[class_name]()
+            new_instance.id = str(uuid.uuid4())  # Set the id attribute with a unique identifier
+            new_instance.save()
+            print(new_instance.id)
+            storage.save()
 
     def set_prompt(self, new_prompt):
         """Set a new prompt dynamically."""
