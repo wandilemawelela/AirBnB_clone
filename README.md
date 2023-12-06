@@ -70,9 +70,8 @@ $
 1. Clone the repository.
 
 ```bash
-Copy code
-git clone https://github.com/your-username/AirBnB-Clone.git
-cd AirBnB-Clone
+https://github.com/wandilemawelela/AirBnB_clone.git
+cd AirBnB-clone
 ```
 
 2. Run the command interpreter in interactive mode.
