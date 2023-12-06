@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 from models.base_model import BaseModel
 
 class TestBaseModel(unittest.TestCase):
@@ -58,10 +58,11 @@ class TestBaseModel(unittest.TestCase):
         Test the save method of BaseModel.
         """
         initial_updated_at = self.base_model.updated_at
-        with patch.object(BaseModel, 'updated_at') as mock_updated_at:
+        with patch.object(self.base_model, 'updated_at') as mock_updated_at:
             self.base_model.save()
             mock_updated_at.assert_called_once()
             self.assertNotEqual(self.base_model.updated_at, initial_updated_at)
+
 
     def test_to_dict(self):
         """
