@@ -57,6 +57,29 @@ class HBNBCommand(cmd.Cmd):
             new_instance.save()
             print(new_instance.id)
             storage.save()
+    
+    def do_show(self, arg):
+        """Usage: show <class> <id>
+        Prints the string representation of an instance based on the class name and id.
+        """
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            class_name = args[0]
+            instance_id = args[1]
+            global_namespace = globals()
+
+            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+                print("** class doesn't exist **")
+            else:
+                key = "{}.{}".format(class_name, instance_id)
+                if key in storage.all():
+                    print(storage.all()[key])
+                else:
+                    print("** no instance found **")
 
     def set_prompt(self, new_prompt):
         """Set a new prompt dynamically."""
