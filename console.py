@@ -38,25 +38,15 @@ class HBNBCommand(cmd.Cmd):
         """Display help message for the EOF command."""
         print("Exit the program when EOF is received")
 
-    def do_create(self, arg):
-        """Usage: create <class>
-        Create a new class instance and print its id.
-        """
-        args = arg.split()
-        if len(args) == 0:
-            print("** class name missing **")
-        else:
-            class_name = args[0]
-            global_namespace = globals()
-
-        if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
-            print("** class doesn't exist **")
-        else:
-            new_instance = global_namespace[class_name]()
-            new_instance.id = str(uuid.uuid4())
-            new_instance.save()
-            print(new_instance.id)
-            storage.save()
+    def do_create(self, arg): """Create a new instance of a class."""
+    argl = parse_arguments(arg)
+    if len(argl) == 0:
+        print("** class name missing **")
+    elif argl[0] not in HBNBCommand.__classes:
+        print("** class doesn't exist **")
+    else:
+        print(eval(argl[0])().id)
+        storage.save()
 
     def set_prompt(self, new_prompt):
         """Set a new prompt dynamically."""
@@ -77,5 +67,7 @@ class HBNBCommand(cmd.Cmd):
             super().cmdloop()
         except KeyboardInterrupt:
             print("\nExiting the HBnB console. Goodbye!")
+
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
