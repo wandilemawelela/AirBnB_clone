@@ -77,7 +77,5 @@ class HBNBCommand(cmd.Cmd):
             super().cmdloop()
         except KeyboardInterrupt:
             print("\nExiting the HBnB console. Goodbye!")
-
-
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
