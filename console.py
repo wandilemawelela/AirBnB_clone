@@ -15,31 +15,42 @@ class HBNBCommand(cmd.Cmd):
         self.prompt = "(hbnb) "
 
     def do_quit(self, arg):
-        """Exit the program.
+        """
+        Exit the program.
 
         Usage: quit
         """
         return True
 
     def do_EOF(self, arg):
-        """Exit the program when EOF is received."""
+        """
+        Exit the program when EOF is received.
+        """
         print("")  # Ensure a newline is printed before exiting
         return True
 
     def emptyline(self):
-        """Do nothing when an empty line is entered."""
+        """
+        Do nothing when an empty line is entered.
+        """
         pass
 
     def help_quit(self):
-        """Display help message for the quit command."""
+        """
+        Display help message for the quit command.
+        """
         print("Quit command to exit the program")
 
     def help_EOF(self):
-        """Display help message for the EOF command."""
+        """
+        Display help message for the EOF command.
+        """
         print("Exit the program when EOF is received")
 
     def do_create(self, arg):
-        """Usage: create <class>
+        """
+        Usage: create <class>
+        
         Create a new class instance and print its id.
         """
         args = arg.split()
@@ -59,8 +70,38 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
     
     def do_show(self, arg):
-        """Usage: show <class> <id>
+        """
+        Usage: show <class> <id>
+
         Prints the string representation of an instance based on the class name and id.
+        """
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            class_name = args[0]
+            instance_id = args[1]
+            global_namespace = globals()
+
+        if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+            print("** class doesn't exist **")
+        else:
+            key = "{}.{}".format(class_name, instance_id)
+            all_instances = storage.all()
+            if key in all_instances:
+                print(all_instances[key])
+            else:
+                print("** no instance found **")
+
+    
+    def do_destroy(self, arg):
+        """
+        Usage: destroy <class> <id>
+        
+        Deletes an instance based on the class name and ID
+        (save the change into the JSON file).
         """
         args = arg.split()
         if len(args) == 0:
@@ -77,7 +118,72 @@ class HBNBCommand(cmd.Cmd):
             else:
                 key = "{}.{}".format(class_name, instance_id)
                 if key in storage.all():
-                    print(storage.all()[key])
+                    del storage.all()[key]
+                    storage.save()
+                else:
+                    print("** no instance found **")
+
+    def do_all(self, arg):
+        """
+        Usage: all [<class>]
+        
+        Prints all string representation of all instances based or not on the class name.
+        """
+        args = arg.split()
+        object_list = []
+
+        if len(args) == 0:
+            for key, obj in storage.all().items():
+                object_list.append(str(obj))
+            print(object_list)
+        else:
+            class_name = args[0]
+            global_namespace = globals()
+
+            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+                print("** class doesn't exist **")
+            else:
+                for key, obj in storage.all().items():
+                    if key.split('.')[0] == class_name:
+                        object_list.append(str(obj))
+                print(object_list)
+
+    def do_update(self, arg):
+        """
+        Usage: update <class name> <id> <attribute name> "<attribute value>"
+        
+        Updates an instance based on the class name and ID by adding or updating
+        an attribute (save the change into the JSON file).
+        """
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        elif len(args) == 2:
+            print("** attribute name missing **")
+        elif len(args) == 3:
+            print("** value missing **")
+        else:
+            class_name = args[0]
+            instance_id = args[1]
+            attribute_name = args[2]
+            attribute_value = args[3]
+            global_namespace = globals()
+
+            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+                print("** class doesn't exist **")
+            else:
+                key = "{}.{}".format(class_name, instance_id)
+                if key in storage.all():
+                    obj = storage.all()[key]
+                    # Check if the attribute exists and is updateable
+                    if hasattr(obj, attribute_name) and attribute_name not in ['id', 'created_at', 'updated_at']:
+                        # Update the attribute with the casted value
+                        setattr(obj, attribute_name, type(getattr(obj, attribute_name))(attribute_value))
+                        obj.save()
+                    else:
+                        print("** attribute name not found or not updateable **")
                 else:
                     print("** no instance found **")
 
