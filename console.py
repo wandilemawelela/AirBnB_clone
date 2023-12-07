@@ -90,7 +90,6 @@ class HBNBCommand(cmd.Cmd):
         Usage: create <class>
 
         Create a new class instance and print its id.
-        """
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
