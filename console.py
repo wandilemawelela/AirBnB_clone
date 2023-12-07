@@ -53,7 +53,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             new_instance = global_namespace[class_name]()
-            new_instance.id = str(uuid.uuid4())  # Set the id attribute with a unique identifier
+            new_instance.id = str(uuid.uuid4())
             new_instance.save()
             print(new_instance.id)
             storage.save()
