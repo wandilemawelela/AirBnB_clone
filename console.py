@@ -190,6 +190,19 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** no instance found **")
 
+    def do_create(self, arg): """Create a new class instance"""
+    args = arg.split()
+    if len(args) == 0:
+        print("** class name missing **")
+    elif args[0] not in self.classes:
+        print("** class doesn't exist **")
+    else:
+        new_instance = eval(args[0])()
+        new_instance.id = str(uuid.uuid4())
+        new_instance.save()
+        print(new_instance.id)
+        models.storage.save()
+
     def set_prompt(self, new_prompt):
         """Set a new prompt dynamically."""
         self.prompt = f"({new_prompt}) "
