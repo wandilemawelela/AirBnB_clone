@@ -79,23 +79,26 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
         elif len(args) == 1:
-            print("** instance id missing **")
+            class_name = args[0]
+            global_namespace = globals()
+            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+                print("** class doesn't exist **")
+            else:
+                print("** instance id missing **")
         else:
             class_name = args[0]
             instance_id = args[1]
             global_namespace = globals()
-
-        if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
-            print("** class doesn't exist **")
-        else:
-            key = "{}.{}".format(class_name, instance_id)
-            all_instances = storage.all()
-            if key in all_instances:
-                print(all_instances[key])
+            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+                print("** class doesn't exist **")
             else:
-                print("** no instance found **")
-
-    
+                key = "{}.{}".format(class_name, instance_id)
+                all_instances = storage.all()
+                if key in all_instances:
+                    print(all_instances[key])
+                else:
+                    print("** no instance found **")
+  
     def do_destroy(self, arg):
         """
         Usage: destroy <class> <id>
