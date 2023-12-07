@@ -1,13 +1,10 @@
 #!/usr/bin/python3
 """Defines the HBnB console."""
 import cmd
-<<<<<<< HEAD
 import uuid
 from models.engine.file_storage import FileStorage
-=======
 import re
 from shlex import split
->>>>>>> 2819012 (console)
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -89,22 +86,17 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, arg):
-<<<<<<< HEAD
         """
         Usage: create <class>
 
-=======
-        """Usage: create <class>
->>>>>>> 2819012 (console)
         Create a new class instance and print its id.
         """
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
-<<<<<<< HEAD
             return
 
-        class_name = args[0]
+        class_name = argl[0]
 
         # Check if the class exists in the global namespace
         global_namespace = globals()
@@ -122,15 +114,7 @@ class HBNBCommand(cmd.Cmd):
         print(f"Instance saved to storage: {new_instance}")
 
         print(new_instance.id)
-              
-=======
-        elif argl[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
-        else:
-            print(eval(argl[0])().id)
-            storage.save()
 
->>>>>>> 2819012 (console)
     def do_show(self, arg):
         """Usage: show <class> <id> or <class>.show(<id>)
         Display the string representation of a class instance of a given id.
@@ -139,9 +123,8 @@ class HBNBCommand(cmd.Cmd):
         objdict = storage.all()
         if len(argl) == 0:
             print("** class name missing **")
-<<<<<<< HEAD
-        elif len(args) == 1:
-            class_name = args[0]
+        elif len(argl) == 1:
+            class_name = argl[0]
             global_namespace = globals()
             if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
                 print("** class doesn't exist **")
@@ -149,8 +132,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
 
         else:
-            class_name = args[0]
-            instance_id = args[1]
+            class_name = argl[0]
+            instance_id = argl[1]
             global_namespace = globals()
             if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
                 print("** class doesn't exist **")
@@ -166,26 +149,23 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, arg):
         """
         Usage: destroy <class> <id>
-        
+
         Deletes an instance based on the class name and ID
         (save the change into the JSON file).
         """
-        args = arg.split()
-        if len(args) == 0:
+        argl = parse(arg)
+        objdict = storage.all()
+        if len(argl) == 0:
             print("** class name missing **")
-        elif len(args) == 1:
-=======
         elif argl[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         elif len(argl) == 1:
->>>>>>> 2819012 (console)
             print("** instance id missing **")
         elif "{}.{}".format(argl[0], argl[1]) not in objdict:
             print("** no instance found **")
         else:
             print(objdict["{}.{}".format(argl[0], argl[1])])
 
-<<<<<<< HEAD
             if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
                 print("** class doesn't exist **")
             else:
@@ -196,24 +176,6 @@ class HBNBCommand(cmd.Cmd):
                     # print(f"Instance deleted: {class_name} - {instance_id}") Debug statement
                 else:
                     print("** no instance found **")
-=======
-    def do_destroy(self, arg):
-        """Usage: destroy <class> <id> or <class>.destroy(<id>)
-        Delete a class instance of a given id."""
-        argl = parse(arg)
-        objdict = storage.all()
-        if len(argl) == 0:
-            print("** class name missing **")
-        elif argl[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
-        elif len(argl) == 1:
-            print("** instance id missing **")
-        elif "{}.{}".format(argl[0], argl[1]) not in objdict.keys():
-            print("** no instance found **")
-        else:
-            del objdict["{}.{}".format(argl[0], argl[1])]
-            storage.save()
->>>>>>> 2819012 (console)
 
     def do_all(self, arg):
         """Usage: all or all <class> or <class>.all()
@@ -275,7 +237,6 @@ class HBNBCommand(cmd.Cmd):
                 valtype = type(obj.__class__.__dict__[argl[2]])
                 obj.__dict__[argl[2]] = valtype(argl[3])
             else:
-<<<<<<< HEAD
                 key = "{}.{}".format(class_name, instance_id)
                 if key in storage.all():
                     obj = storage.all()[key]
@@ -287,7 +248,6 @@ class HBNBCommand(cmd.Cmd):
                         # print(f"Attribute updated: {class_name} - {instance_id} - {attribute_name} - {attribute_value}") Debug statement
                     else:
                         print("** attribute name not found or not updateable **")
-=======
                 obj.__dict__[argl[2]] = argl[3]
         elif type(eval(argl[2])) == dict:
             obj = objdict["{}.{}".format(argl[0], argl[1])]
@@ -296,22 +256,11 @@ class HBNBCommand(cmd.Cmd):
                         type(obj.__class__.__dict__[k]) in {str, int, float}):
                     valtype = type(obj.__class__.__dict__[k])
                     obj.__dict__[k] = valtype(v)
->>>>>>> 2819012 (console)
                 else:
                     obj.__dict__[k] = v
         storage.save()
 
 
-<<<<<<< HEAD
-if __name__ == '__main__':
-    # Ensure storage is an instance of FileStorage
-    if not isinstance(storage, FileStorage):
-        storage = FileStorage()
-
-    # Load existing objects from the JSON file
-    storage.reload()
-
-=======
 if __name__ == "__main__":
->>>>>>> 2819012 (console)
     HBNBCommand().cmdloop()
+
