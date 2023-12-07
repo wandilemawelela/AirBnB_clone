@@ -1,61 +1,69 @@
-"""
-This module defines the FileStorage class for serializing and deserializing objects to/from a JSON file.
-"""
-
-import json
-from os.path import exists
 import os
+import json
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
+
 
 class FileStorage:
     """
-    The FileStorage class handles the serialization and deserialization of objects to and from a JSON file.
+    Serializes instances to a JSON file and
+    deserializes JSON file to instances
     """
 
-    # __file_path = os.path.join(os.getcwd(), "file.json")
-    __file_path = "/home/tki/software-engineering/ALX/AirBnB_clone/file.json"
+    __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    @classmethod
+    def all(cls):
         """
-        Retrieve the dictionary of serialized objects.
+        Returns the dictionary __objects
+        """
+        return cls.__objects
 
-        Returns:
-            dict: A dictionary containing objects serialized as dictionaries.
+    @classmethod
+    def new(cls, obj):
         """
+        Sets in __objects the obj with key <obj class name>.id
+        """
+        key = f"{type(obj).__name__}.{obj.id}"
+        cls.__objects[key] = obj
 
-        print(f"Objects in storage: {self.__objects}") # Debug statement
+    @classmethod
+    def save(cls):
+        """
+        Serializes __objects to the JSON file (path: __file_path)
+        """
+        serialized_objects = {k: v.to_dict() for k, v in cls.__objects.items()}
+        with open(cls.__file_path, 'w') as f:
+            json.dump(serialized_objects, f)
 
-        return self.__objects
+    @classmethod
+    def reload(cls):
+        """
+        Deserializes the JSON file to __objects only if the JSON
+        file exists; otherwise, does nothing
+        """
+        current_classes = {
+            'BaseModel': BaseModel, 'User': User,
+            'Amenity': Amenity, 'City': City, 'State': State,
+            'Place': Place, 'Review': Review
+        }
 
-    def new(self, obj):
-        """
-        Add a new object to the __objects dictionary.
+        if not os.path.exists(cls.__file_path):
+            return
 
-        Args:
-            obj: The object to be added.
-        """
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        with open(cls.__file_path, 'r') as f:
+            try:
+                deserialized = json.load(f)
+            except json.JSONDecodeError:
+                return
 
-    def save(self):
-        """
-        Serialize and save the objects to the JSON file.
-        """
-        serialized_objects = {}
-        for key, obj in self.__objects.items():
-            serialized_objects[key] = obj.to_dict()
-        with open(self.__file_path, 'w') as file:
-            json.dump(serialized_objects, file)
-
-    def reload(self):
-        """
-        Deserialize and load objects from the JSON file to __objects (if the file exists).
-        """
-        if exists(self.__file_path):
-            with open(self.__file_path, 'r') as file:
-                loaded_objects = json.load(file)
-                for key, obj_dict in loaded_objects.items():
-                    class_name, obj_id = key.split('.')
-                    obj_class = eval(class_name)  # Convert class name to actual class
-                    self.__objects[key] = obj_class(**obj_dict)
+            cls.__objects = {
+                k: current_classes[k.split('.')[0]](**v)
+                for k, v in deserialized.items()
+            }
