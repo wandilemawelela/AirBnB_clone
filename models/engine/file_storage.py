@@ -4,6 +4,7 @@ This module defines the FileStorage class for serializing and deserializing obje
 
 import json
 from os.path import exists
+import os
 from models.base_model import BaseModel
 
 class FileStorage:
@@ -11,7 +12,8 @@ class FileStorage:
     The FileStorage class handles the serialization and deserialization of objects to and from a JSON file.
     """
 
-    __file_path = "file.json"
+    # __file_path = os.path.join(os.getcwd(), "file.json")
+    __file_path = "/home/tki/software-engineering/ALX/AirBnB_clone/file.json"
     __objects = {}
 
     def all(self):
@@ -21,6 +23,9 @@ class FileStorage:
         Returns:
             dict: A dictionary containing objects serialized as dictionaries.
         """
+
+        print(f"Objects in storage: {self.__objects}") # Debug statement
+
         return self.__objects
 
     def new(self, obj):

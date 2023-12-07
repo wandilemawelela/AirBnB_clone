@@ -3,6 +3,7 @@
 
 import cmd
 import uuid
+from models.engine.file_storage import FileStorage
 from models import storage
 from models.base_model import BaseModel
 
@@ -50,25 +51,33 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, arg):
         """
         Usage: create <class>
-        
+
         Create a new class instance and print its id.
         """
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
-        else:
-            class_name = args[0]
-            global_namespace = globals()
+            return
 
+        class_name = args[0]
+
+        # Check if the class exists in the global namespace
+        global_namespace = globals()
         if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+            # If the class doesn't exist, print an error message
             print("** class doesn't exist **")
-        else:
-            new_instance = global_namespace[class_name]()
-            new_instance.id = str(uuid.uuid4())
-            new_instance.save()
-            print(new_instance.id)
-            storage.save()
-    
+            return
+
+        # The class exists, proceed with creating an instance
+        new_instance = global_namespace[class_name]()
+        new_instance.id = str(uuid.uuid4())
+        new_instance.save()  # This line saves the instance to storage
+
+        # Debug print statement to check if the instance is saved
+        print(f"Instance saved to storage: {new_instance}")
+
+        print(new_instance.id)
+              
     def do_show(self, arg):
         """
         Usage: show <class> <id>
@@ -85,6 +94,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
             else:
                 print("** instance id missing **")
+
         else:
             class_name = args[0]
             instance_id = args[1]
@@ -94,11 +104,12 @@ class HBNBCommand(cmd.Cmd):
             else:
                 key = "{}.{}".format(class_name, instance_id)
                 all_instances = storage.all()
+                # print(f"All instances: {all_instances}")  # Debug statement
                 if key in all_instances:
-                    print(all_instances[key])
+                    print(all_instances[key])  # Print the instance itself
                 else:
                     print("** no instance found **")
-  
+
     def do_destroy(self, arg):
         """
         Usage: destroy <class> <id>
@@ -123,6 +134,7 @@ class HBNBCommand(cmd.Cmd):
                 if key in storage.all():
                     del storage.all()[key]
                     storage.save()
+                    # print(f"Instance deleted: {class_name} - {instance_id}") Debug statement
                 else:
                     print("** no instance found **")
 
@@ -185,6 +197,7 @@ class HBNBCommand(cmd.Cmd):
                         # Update the attribute with the casted value
                         setattr(obj, attribute_name, type(getattr(obj, attribute_name))(attribute_value))
                         obj.save()
+                        # print(f"Attribute updated: {class_name} - {instance_id} - {attribute_name} - {attribute_value}") Debug statement
                     else:
                         print("** attribute name not found or not updateable **")
                 else:
@@ -212,4 +225,11 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    # Ensure storage is an instance of FileStorage
+    if not isinstance(storage, FileStorage):
+        storage = FileStorage()
+
+    # Load existing objects from the JSON file
+    storage.reload()
+
     HBNBCommand().cmdloop()
