@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch
 from models.base_model import BaseModel
 
 class TestBaseModel(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestBaseModel(unittest.TestCase):
 
     def test_init_with_kwargs(self):
         """
-        Test initialization with kwargs.
+        Test   initialization with kwargs.
         """
         data = {
             'id': '123',
@@ -36,15 +36,26 @@ class TestBaseModel(unittest.TestCase):
         instance = BaseModel(**data)
 
         self.assertEqual(instance.id, '123')
-        self.assertEqual(instance.custom_attribute, 'value')
+        self.assertEqual(getattr(instance, 'custom_attribute', None), 'value')
         self.assertEqual(
-            instance.created_at,
+            getattr(instance, 'created_at', None),
             datetime.strptime('2022-01-01T12:00:00.000000', '%Y-%m-%dT%H:%M:%S.%f')
         )
         self.assertEqual(
-            instance.updated_at,
+            getattr(instance, 'updated_at', None),
             datetime.strptime('2022-01-02T12:00:00.000000', '%Y-%m-%dT%H:%M:%S.%f')
-        )
+    )
+    def test_init_invalid_datetime_format(self):
+        """
+        Test initialization with invalid datetime format.
+        """
+        invalid_data = {
+            'id': '123',
+            'created_at': 'invalid_datetime_format',
+            'updated_at': '2022-01-02T12:00:00.000000',
+        }
+        with self.assertRaises(ValueError):
+            BaseModel(**invalid_data)
 
     def test_str(self):
         """
@@ -58,10 +69,8 @@ class TestBaseModel(unittest.TestCase):
         Test the save method of BaseModel.
         """
         initial_updated_at = self.base_model.updated_at
-        with patch.object(self.base_model, 'updated_at') as mock_updated_at:
-            self.base_model.save()
-            mock_updated_at.assert_called_once()
-            self.assertNotEqual(self.base_model.updated_at, initial_updated_at)
+        self.base_model.save()
+        self.assertNotEqual(self.base_model.updated_at, initial_updated_at)
 
 
     def test_to_dict(self):
@@ -86,6 +95,14 @@ class TestBaseModel(unittest.TestCase):
 
         self.assertIn('custom_attribute', obj_dict)
         self.assertEqual(obj_dict['custom_attribute'], 'value')
+
+    def test_save_updates_updated_at(self):
+        """
+        Test that save method updates updated_at attribute.
+        """
+        initial_updated_at = self.base_model.updated_at
+        self.base_model.save()
+        self.assertGreater(self.base_model.updated_at, initial_updated_at)
 
 if __name__ == '__main__':
     unittest.main()
