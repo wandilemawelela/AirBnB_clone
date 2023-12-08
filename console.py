@@ -85,7 +85,11 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, arg):
-        """Create a new class instance and print its id."""
+        """
+        Usage: create <class>
+
+        Create a new class instance and print its id.
+        """
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
@@ -227,3 +231,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+
