@@ -2,7 +2,6 @@
 """Defines the HBnB console."""
 import cmd
 import uuid
-from models.engine.file_storage import FileStorage
 import re
 from shlex import split
 from models import storage
@@ -90,6 +89,7 @@ class HBNBCommand(cmd.Cmd):
         Usage: create <class>
 
         Create a new class instance and print its id.
+        """
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
@@ -106,52 +106,36 @@ class HBNBCommand(cmd.Cmd):
 
         # The class exists, proceed with creating an instance
         new_instance = global_namespace[class_name]()
-        new_instance.id = str(uuid.uuid4())
         new_instance.save()  # This line saves the instance to storage
-
-        # Debug print statement to check if the instance is saved
-        print(f"Instance saved to storage: {new_instance}")
-
         print(new_instance.id)
 
     def do_show(self, arg):
-        """Usage: show <class> <id> or <class>.show(<id>)
-        Display the string representation of a class instance of a given id.
-        """
+        """Display the string representation of a class instance."""
         argl = parse(arg)
         objdict = storage.all()
         if len(argl) == 0:
             print("** class name missing **")
         elif len(argl) == 1:
             class_name = argl[0]
-            global_namespace = globals()
-            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+            if class_name not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
             else:
                 print("** instance id missing **")
-
         else:
             class_name = argl[0]
             instance_id = argl[1]
-            global_namespace = globals()
-            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+            if class_name not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
             else:
                 key = "{}.{}".format(class_name, instance_id)
                 all_instances = storage.all()
-                # print(f"All instances: {all_instances}")  # Debug statement
                 if key in all_instances:
                     print(all_instances[key])  # Print the instance itself
                 else:
                     print("** no instance found **")
 
     def do_destroy(self, arg):
-        """
-        Usage: destroy <class> <id>
-
-        Deletes an instance based on the class name and ID
-        (save the change into the JSON file).
-        """
+        """Deletes an instance based on the class name and ID."""
         argl = parse(arg)
         objdict = storage.all()
         if len(argl) == 0:
@@ -164,22 +148,15 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             print(objdict["{}.{}".format(argl[0], argl[1])])
-
-            if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
-                print("** class doesn't exist **")
+            key = "{}.{}".format(argl[0], argl[1])
+            if key in storage.all():
+                del storage.all()[key]
+                storage.save()
             else:
-                key = "{}.{}".format(class_name, instance_id)
-                if key in storage.all():
-                    del storage.all()[key]
-                    storage.save()
-                    # print(f"Instance deleted: {class_name} - {instance_id}") Debug statement
-                else:
-                    print("** no instance found **")
+                print("** no instance found **")
 
     def do_all(self, arg):
-        """Usage: all or all <class> or <class>.all()
-        Display string representations of all instances of a given class.
-        If no class is specified, displays all instantiated objects."""
+        """Display string representations of all instances."""
         argl = parse(arg)
         if len(argl) > 0 and argl[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
@@ -193,8 +170,7 @@ class HBNBCommand(cmd.Cmd):
             print(objl)
 
     def do_count(self, arg):
-        """Usage: count <class> or <class>.count()
-        Retrieve the number of instances of a given class."""
+        """Retrieve the number of instances of a given class."""
         argl = parse(arg)
         count = 0
         for obj in storage.all().values():
@@ -203,8 +179,7 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def do_update(self, arg):
-        """Update a class instance of a given id by adding or updating
-        a given attribute key/value pair or dictionary."""
+        """Update a class instance by adding or updating attributes."""
         argl = parse(arg)
         objdict = storage.all()
 
@@ -224,41 +199,35 @@ class HBNBCommand(cmd.Cmd):
             print("** attribute name missing **")
             return False
         if len(argl) == 3:
-            try:
-                type(eval(argl[2])) != dict
-            except NameError:
+            # Check if the value is a dictionary
+            if argl[2][0] == '{':
+                try:
+                    value_dict = eval(argl[2])
+                    if not isinstance(value_dict, dict):
+                        print("** invalid dictionary syntax **")
+                        return False
+                except Exception:
+                    print("** invalid dictionary syntax **")
+                    return False
+            else:
                 print("** value missing **")
                 return False
-
         if len(argl) == 4:
             obj = objdict["{}.{}".format(argl[0], argl[1])]
-            if argl[2] in obj.__class__.__dict__.keys():
-                valtype = type(obj.__class__.__dict__[argl[2]])
-                obj.__dict__[argl[2]] = valtype(argl[3])
+            # Check if the attribute exists in the class or as a property
+            if hasattr(obj, argl[2]):
+                setattr(obj, argl[2], type(getattr(obj, argl[2]))(argl[3]))
+                obj.save()  # Save the changes made to the object
             else:
-                key = "{}.{}".format(class_name, instance_id)
-                if key in storage.all():
-                    obj = storage.all()[key]
-                    # Check if the attribute exists and is updateable
-                    if hasattr(obj, attribute_name) and attribute_name not in ['id', 'created_at', 'updated_at']:
-                        # Update the attribute with the casted value
-                        setattr(obj, attribute_name, type(getattr(obj, attribute_name))(attribute_value))
-                        obj.save()
-                        # print(f"Attribute updated: {class_name} - {instance_id} - {attribute_name} - {attribute_value}") Debug statement
-                    else:
-                        print("** attribute name not found or not updateable **")
-                obj.__dict__[argl[2]] = argl[3]
+                print("** attribute name not found or not updateable **")
         elif type(eval(argl[2])) == dict:
             obj = objdict["{}.{}".format(argl[0], argl[1])]
             for k, v in eval(argl[2]).items():
-                if (k in obj.__class__.__dict__.keys() and
-                        type(obj.__class__.__dict__[k]) in {str, int, float}):
-                    valtype = type(obj.__class__.__dict__[k])
-                    obj.__dict__[k] = valtype(v)
+                if hasattr(obj, k):
+                    setattr(obj, k, type(getattr(obj, k))(v))
                 else:
                     obj.__dict__[k] = v
-        storage.save()
-
+            obj.save()  # Save the changes made to the object
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
