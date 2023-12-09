@@ -195,5 +195,6 @@ class Test_Console(unittest.TestCase):
         output = out.getvalue().strip()
         self.assertEqual(output, "** value missing **")
 
+
 if __name__ == "__main__":
     unittest.main()

@@ -3,6 +3,7 @@ from datetime import datetime
 from unittest.mock import patch
 from models.base_model import BaseModel
 
+
 class TestBaseModel(unittest.TestCase):
     """
     Test cases for the BaseModel class.
@@ -39,12 +40,14 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(getattr(instance, 'custom_attribute', None), 'value')
         self.assertEqual(
             getattr(instance, 'created_at', None),
-            datetime.strptime('2022-01-01T12:00:00.000000', '%Y-%m-%dT%H:%M:%S.%f')
+            datetime.strptime('2022-01-01T12:00:00.000000',
+                              '%Y-%m-%dT%H:%M:%S.%f')
         )
         self.assertEqual(
             getattr(instance, 'updated_at', None),
-            datetime.strptime('2022-01-02T12:00:00.000000', '%Y-%m-%dT%H:%M:%S.%f')
-    )
+            datetime.strptime('2022-01-02T12:00:00.000000',
+                              '%Y-%m-%dT%H:%M:%S.%f'))
+
     def test_init_invalid_datetime_format(self):
         """
         Test initialization with invalid datetime format.
@@ -61,7 +64,8 @@ class TestBaseModel(unittest.TestCase):
         """
         Test the __str__ method of BaseModel.
         """
-        expected_output = f"[BaseModel] ({self.base_model.id}) {self.base_model.__dict__}"
+        expected_output = f"[BaseModel] ({self.base_model.id}) \
+                {self.base_model.__dict__}"
         self.assertEqual(str(self.base_model), expected_output)
 
     def test_save(self):
@@ -71,7 +75,6 @@ class TestBaseModel(unittest.TestCase):
         initial_updated_at = self.base_model.updated_at
         self.base_model.save()
         self.assertNotEqual(self.base_model.updated_at, initial_updated_at)
-
 
     def test_to_dict(self):
         """
@@ -83,8 +86,10 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(obj_dict, dict)
         self.assertCountEqual(obj_dict.keys(), expected_keys)
         self.assertEqual(obj_dict['__class__'], 'BaseModel')
-        self.assertEqual(obj_dict['created_at'], self.base_model.created_at.isoformat())
-        self.assertEqual(obj_dict['updated_at'], self.base_model.updated_at.isoformat())
+        self.assertEqual(obj_dict['created_at'],
+                         self.base_model.created_at.isoformat())
+        self.assertEqual(obj_dict['updated_at'],
+                         self.base_model.updated_at.isoformat())
 
     def test_to_dict_with_custom_attribute(self):
         """
@@ -104,6 +109,6 @@ class TestBaseModel(unittest.TestCase):
         self.base_model.save()
         self.assertGreater(self.base_model.updated_at, initial_updated_at)
 
+
 if __name__ == '__main__':
     unittest.main()
-
