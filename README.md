@@ -100,11 +100,12 @@ Usage: show <class> <id> or <class>.show(<id>)
 (hbnb) User.show(uid)
 (hbnb)
 
-   *destroy: Usage: destroy <class> <id>
+*destroy: Usage: destroy <class> <id>
  Deletes an instance based on the class name and id (save the change into the JSON file)
   *all
 Usage: all or all <class>
   Prints all string representation of all instances based or not on the class name
+
    ```$ ./console.py
 (hbnb) create BaseModel
 (hbnb) create BaseModel
@@ -113,5 +114,5 @@ Usage: all or all <class>
 (hbnb)
 (hbnb) all BaseModel
 
-  *update
+*update
 Usage: update ```<class> <id>
