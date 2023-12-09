@@ -92,6 +92,7 @@ Creates a new instance of BaseModel, saves it (to the JSON file) and prints the 
    *show
 Usage: show <class> <id> or <class>.show(<id>)
 
+
   ```$ ./console.py
 (hbnb) create User
 (hbnb)
@@ -100,11 +101,14 @@ Usage: show <class> <id> or <class>.show(<id>)
 (hbnb) User.show(uid)
 (hbnb)
 
+
 *destroy: Usage: destroy <class> <id>
  Deletes an instance based on the class name and id (save the change into the JSON file)
   *all
 Usage: all or all <class>
   Prints all string representation of all instances based or not on the class name
+
+
 
    ```$ ./console.py
 (hbnb) create BaseModel
@@ -113,6 +117,8 @@ Usage: all or all <class>
 (hbnb) create User
 (hbnb)
 (hbnb) all BaseModel
+
+
 
 *update
 Usage: update ```<class> <id>
