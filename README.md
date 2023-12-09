@@ -88,5 +88,5 @@ The AirBnB console supports the following commands:
   create
 Usage: create <class>
 
-
+Creates a new instance of BaseModel, saves it (to the JSON file) and prints the id
 
