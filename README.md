@@ -83,3 +83,7 @@ Copy code
 
 3. Explore the documented commands and start managing your AirBnB objects!
 
+Console Commands
+The AirBnB console supports the following commands:
+
+
