@@ -99,7 +99,8 @@ class HBNBCommand(cmd.Cmd):
 
         # Check if the class exists in the global namespace
         global_namespace = globals()
-        if class_name not in global_namespace or not isinstance(global_namespace[class_name], type):
+        if class_name not in global_namespace or \
+                not isinstance(global_namespace[class_name], type):
             # If the class doesn't exist, print an error message
             print("** class doesn't exist **")
             return
@@ -154,6 +155,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.save()
             else:
                 print("** no instance found **")
+
     def do_all(self, arg):
         """Display string representations of all instances."""
         argl = parse(arg)
@@ -166,7 +168,8 @@ class HBNBCommand(cmd.Cmd):
 
             if class_name:
                 # Retrieve instances of a specific class
-                obj_list = [obj.__str__() for obj in storage.all().values() if isinstance(obj, globals()[class_name])]
+                obj_list = [obj.__str__() for obj in storage.all().values()
+                            if isinstance(obj, globals()[class_name])]
             else:
                 # Retrieve instances of all classes
                 obj_list = [obj.__str__() for obj in storage.all().values()]
@@ -233,6 +236,6 @@ class HBNBCommand(cmd.Cmd):
                     obj.__dict__[k] = v
             obj.save()  # Save the changes made to the object
 
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
-
