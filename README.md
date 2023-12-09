@@ -135,3 +135,7 @@ $ ./console.py
 (hbnb) User.show(uid)
 (hbnb)
 (hbnb) User.update(uid, {'email': 'email', 'last_name': 'last_name'}
+
+
+[Test]
+
