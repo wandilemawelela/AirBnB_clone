@@ -139,4 +139,6 @@ $ ./console.py
 
 [Test]
 
-Unittests for the Airbnb_clone project are defined in the tests folder. To run the entire test suite simultaneously, execute the following command:
+Unittests for the Airbnb_clone project are defined in the tests folder. To run the entire test suite simultaneously, execute the following command: 
+
+``` $ python3 unittest -m discover tests$ 
