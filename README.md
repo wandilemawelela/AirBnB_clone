@@ -85,5 +85,8 @@ Copy code
 
 Console Commands
 The AirBnB console supports the following commands:
+  create
+Usage: create <class>
+
 
 
