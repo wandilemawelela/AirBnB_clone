@@ -105,4 +105,12 @@ Usage: show <class> <id> or <class>.show(<id>)
   *all
 Usage: all or all <class>
   Prints all string representation of all instances based or not on the class name
+   ```$ ./console.py
+(hbnb) create BaseModel
+(hbnb) create BaseModel
+(hbnb) create User
+(hbnb) create User
+(hbnb)
+(hbnb) all BaseModel
+
 
