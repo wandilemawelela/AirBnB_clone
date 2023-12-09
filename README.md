@@ -98,8 +98,11 @@ Usage: show <class> <id> or <class>.show(<id>)
 (hbnb) show User uid		
 (hbnb) 
 (hbnb) User.show(uid)
-(hbnb)```
+(hbnb)
+
    *destroy: Usage: destroy <class> <id>
  Deletes an instance based on the class name and id (save the change into the JSON file)
-
+  *all
+Usage: all or all <class>
+  Prints all string representation of all instances based or not on the class name
 
