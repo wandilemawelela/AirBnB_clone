@@ -141,4 +141,4 @@ $ ./console.py
 
 Unittests for the Airbnb_clone project are defined in the tests folder. To run the entire test suite simultaneously, execute the following command: 
 
-``` $ python3 unittest -m discover tests$ 
+```$ python3 unittest -m discover tests$ 
