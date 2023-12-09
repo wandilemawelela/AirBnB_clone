@@ -85,8 +85,20 @@ Copy code
 
 Console Commands
 The AirBnB console supports the following commands:
-  create
+  *create
 Usage: create <class>
 
 Creates a new instance of BaseModel, saves it (to the JSON file) and prints the id
+   *show
+Usage: show <class> <id> or <class>.show(<id>)
+
+  $ ./console.py
+(hbnb) create User
+(hbnb)
+(hbnb) show User uid		
+(hbnb) 
+(hbnb) User.show(uid)
+(hbnb) 
+   *destroy: Deletes an instance based on the class name and id (save the change into the JSON file)
+
 
