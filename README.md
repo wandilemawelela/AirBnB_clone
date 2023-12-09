@@ -113,4 +113,5 @@ Usage: all or all <class>
 (hbnb)
 (hbnb) all BaseModel
 
-
+  *update
+Usage: update ```<class> <id>
