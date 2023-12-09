@@ -6,6 +6,7 @@ import models
 import uuid
 from datetime import datetime
 
+
 class BaseModel():
     """
     Base class which defines all common
@@ -21,7 +22,8 @@ class BaseModel():
             **kwargs: Arbitrary keyword arguments.
 
         Notes:
-            Excludes certain attributes (e.g., '__class__', 'created_at', 'updated_at') from initialization.
+            Excludes certain attributes (e.g., '__class__', 'created_at',
+            'updated_at') from initialization.
 
         Raises:
             ValueError: If invalid datetime format is provided.
@@ -35,9 +37,11 @@ class BaseModel():
                 # Convert string to datetime for 'created_at' and 'updated_at'
                 if key == "created_at" or key == "updated_at":
                     try:
-                        value = datetime.fromisoformat(value) if value else None
+                        value = datetime.fromisoformat(value)
+                        if value else None
                     except ValueError:
-                        raise ValueError(f"Invalid datetime format for {key}: {value}")
+                        raise ValueError(f"Invalid datetime format \
+                                for {key}: {value}")
 
                 # Set attribute
                 setattr(self, key, value)
@@ -76,7 +80,8 @@ class BaseModel():
 
     def to_dict(self):
         """
-        Returns a dictionary containing all keys/values of __dict__ of the instance.
+        Returns a dictionary containing all keys/values
+        of __dict__ of the instance.
 
         Returns:
             dict: Dictionary representation of the instance.
@@ -90,4 +95,3 @@ class BaseModel():
                 obj_dict[attr] = obj_dict[attr].isoformat()
 
         return obj_dict
-
