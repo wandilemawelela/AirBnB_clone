@@ -37,11 +37,10 @@ class BaseModel():
                 # Convert string to datetime for 'created_at' and 'updated_at'
                 if key == "created_at" or key == "updated_at":
                     try:
-                        value = datetime.fromisoformat(value)
-                        if value else None
+                        value = datetime.fromisoformat(value) if value else None
                     except ValueError:
-                        raise ValueError(f"Invalid datetime format \
-                                for {key}: {value}")
+                        raise ValueError(f"Invalid datetime format "
+                                         f"for {key}: {value}")
 
                 # Set attribute
                 setattr(self, key, value)
@@ -54,6 +53,7 @@ class BaseModel():
 
             # Save the new object
             models.storage.new(self)
+            models.storage.save()
 
     def __str__(self):
         """
