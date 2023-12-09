@@ -139,3 +139,4 @@ $ ./console.py
 
 [Test]
 
+Unittests for the Airbnb_clone project are defined in the tests folder. To run the entire test suite simultaneously, execute the following command:
